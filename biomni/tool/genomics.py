@@ -15,7 +15,7 @@ def annotate_celltype_scRNA(
     data_info,
     data_lake_path,
     cluster="leiden",
-    llm="claude-3-5-sonnet-20241022",
+    llm="claude-sonnet-4-20250514",
     composition=None,
 ):
     """Annotate cell types based on gene markers and transferred labels using LLM.
@@ -53,6 +53,7 @@ def annotate_celltype_scRNA(
         return "\n".join(info) + " " + "; ".join(cluster_comp) + "\n"
 
     from langchain_core.prompts import PromptTemplate
+
     # from langchain.chains import LLMChain
 
     steps = []

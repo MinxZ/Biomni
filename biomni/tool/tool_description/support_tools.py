@@ -27,4 +27,36 @@ description = [
             }
         ],
     },
+    {
+        "description": "Read an image from URL or local path using LLM and provide a summary of its contents.",
+        "name": "read_and_summarize_image",
+        "optional_parameters": [
+            {
+                "default": "general",
+                "description": "Analysis mode: 'general', 'scientific', 'medical', 'data_viz', 'text_extraction', or 'custom'",
+                "name": "mode",
+                "type": "str",
+            },
+            {
+                "default": None,
+                "description": "Custom prompt for analysis (overrides mode-based prompt)",
+                "name": "prompt",
+                "type": "str",
+            },
+            {
+                "default": "claude-sonnet-4-20250514",
+                "description": "LLM model to use for image analysis",
+                "name": "model",
+                "type": "str",
+            }
+        ],
+        "required_parameters": [
+            {
+                "default": None,
+                "description": "URL or local path to the image file to analyze",
+                "name": "image_source",
+                "type": "str",
+            }
+        ],
+    },
 ]

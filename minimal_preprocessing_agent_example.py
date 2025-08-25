@@ -35,8 +35,6 @@ def create_minimal_preprocessing_agent():
     }
     agent.module2api = preprocessing_modules
     
-    # Reconfigure agent with minimal setup
-    agent.configure()
     
     print("✅ Configured minimal agent with:")
     print(f"   📦 {len(essential_packages)} essential packages")
