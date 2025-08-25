@@ -14,7 +14,7 @@ def create_minimal_preprocessing_agent():
     # Initialize agent without downloading default data lake
     agent = A1(
         use_tool_retriever=True,
-        download_data_lake=False, llm='azure-o4-mini'
+        download_data_lake=False, llm='claude-sonnet-4-20250514'
     )
     
     # Clear default data lake to avoid distractions
@@ -35,8 +35,9 @@ def create_minimal_preprocessing_agent():
     }
     agent.module2api = preprocessing_modules
     
+    agent.data_lake_dict = {}
     # Reconfigure agent with minimal setup
-    agent.configure()
+    # agent.configure()
     
     print("✅ Configured minimal agent with:")
     print(f"   📦 {len(essential_packages)} essential packages")
@@ -44,7 +45,6 @@ def create_minimal_preprocessing_agent():
     print(f"   📊 {len(agent.data_lake_dict)} data lake items (empty)")
     
     return agent
-
 
 def example_minimal_preprocessing():
     """Example using minimal agent configuration with real data."""
@@ -98,7 +98,6 @@ def example_minimal_preprocessing():
     return log, result
 
 
-
 if __name__ == "__main__":
     print("🧬 Minimal Biomni Agent - Preprocessing Only")
     print("="*60)
@@ -136,18 +135,3 @@ if __name__ == "__main__":
         if "error" in result:
             print(f"   └─ Error: {result['error']}")
     
-    # print("\n🔧 Configuration Tips:")
-    # print("   • Set download_data_lake=False to avoid default datasets")
-    # print("   • Clear agent.data_lake_dict = {} to remove default data")
-    # print("   • Filter agent.module2api to keep only preprocessing tools")
-    # print("   • Limit agent.library_content_dict to essential packages")
-    # print("   • Call agent.configure() after making changes")
-    
-    # print("\n💡 Usage Pattern:")
-    # print("   ```python")
-    # print("   agent = A1(download_data_lake=False, llm='apac.anthropic.claude-sonnet-4-20250514-v1:0')")
-    # print("   agent.data_lake_dict = {}  # Clear defaults")
-    # print("   agent.library_content_dict = {'pandas': 'Data analysis'}")
-    # print("   agent.module2api = {'biomni.tool.preprocessing': tools}")
-    # print("   agent.configure()  # Apply changes")
-    # print("   ```")

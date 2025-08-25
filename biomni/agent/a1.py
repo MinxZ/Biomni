@@ -8,7 +8,8 @@ from typing import Any, Literal, TypedDict
 
 import pandas as pd
 from dotenv import load_dotenv
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
+from langchain_core.messages import (AIMessage, BaseMessage, HumanMessage,
+                                     SystemMessage)
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
@@ -18,17 +19,10 @@ from biomni.llm import SourceType, get_llm
 from biomni.model.retriever import ToolRetriever
 from biomni.tool.support_tools import run_python_repl
 from biomni.tool.tool_registry import ToolRegistry
-from biomni.utils import (
-    check_and_download_s3_files,
-    download_and_unzip,
-    function_to_api_schema,
-    pretty_print,
-    read_module2api,
-    run_bash_script,
-    run_r_code,
-    run_with_timeout,
-    textify_api_dict,
-)
+from biomni.utils import (check_and_download_s3_files, download_and_unzip,
+                          function_to_api_schema, pretty_print,
+                          read_module2api, run_bash_script, run_r_code,
+                          run_with_timeout, textify_api_dict)
 
 if os.path.exists(".env"):
     load_dotenv(".env", override=False)
@@ -50,6 +44,7 @@ class A1:
         timeout_seconds=600,
         base_url: str | None = None,
         api_key: str = "EMPTY",
+        download_data_lake=False
     ):
         """Initialize the biomni agent.
 
@@ -79,30 +74,31 @@ class A1:
 
         expected_data_lake_files = list(data_lake_dict.keys())
 
-        # Check and download missing data lake files
-        print("Checking and downloading missing data lake files...")
-        check_and_download_s3_files(
-            s3_bucket_url="https://biomni-release.s3.amazonaws.com",
-            local_data_lake_path=data_lake_dir,
-            expected_files=expected_data_lake_files,
-            folder="data_lake",
-        )
-
-        # Check if benchmark directory structure is complete
-        benchmark_ok = False
-        if os.path.isdir(benchmark_dir):
-            patient_gene_detection_dir = os.path.join(benchmark_dir, "hle")
-            if os.path.isdir(patient_gene_detection_dir):
-                benchmark_ok = True
-
-        if not benchmark_ok:
-            print("Checking and downloading benchmark files...")
+        if download_data_lake:
+            # Check and download missing data lake files
+            print("Checking and downloading missing data lake files...")
             check_and_download_s3_files(
                 s3_bucket_url="https://biomni-release.s3.amazonaws.com",
-                local_data_lake_path=benchmark_dir,
-                expected_files=[],  # Empty list - will download entire folder
-                folder="benchmark",
+                local_data_lake_path=data_lake_dir,
+                expected_files=expected_data_lake_files,
+                folder="data_lake",
             )
+
+            # Check if benchmark directory structure is complete
+            benchmark_ok = False
+            if os.path.isdir(benchmark_dir):
+                patient_gene_detection_dir = os.path.join(benchmark_dir, "hle")
+                if os.path.isdir(patient_gene_detection_dir):
+                    benchmark_ok = True
+
+            if not benchmark_ok:
+                print("Checking and downloading benchmark files...")
+                check_and_download_s3_files(
+                    s3_bucket_url="https://biomni-release.s3.amazonaws.com",
+                    local_data_lake_path=benchmark_dir,
+                    expected_files=[],  # Empty list - will download entire folder
+                    folder="benchmark",
+                )
 
         self.path = os.path.join(path, "biomni_data")
         module2api = read_module2api()
